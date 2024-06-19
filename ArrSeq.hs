@@ -14,11 +14,13 @@ myMap f xs = A.tabulate (\i -> f (xs ! i)) (A.length xs)
 myFilter :: (a -> Bool) -> A.Arr a -> A.Arr a
 myFilter f = A.flatten . myMap (\x -> if f x then singletonS x else emptyS)
 
-myAppend :: A.Arr a -> A.Arr a -> A.Arr a 
-myAppend a b = let 
-    (la, lb) = A.length a ||| A.length b
-    n = la + lb
-    in A.tabulate (\i -> if i < la then a ! i else b ! (i - la)) n
+--myAppend :: A.Arr a -> A.Arr a -> A.Arr a 
+--myAppend a b = let 
+--    (la, lb) = A.length a ||| A.length b
+--    n = la + lb
+--    in A.tabulate (\i -> if i < la then a ! i else b ! (i - la)) n
+
+myAppend a b = A.flatten (A.fromList [a, b])
 
 myTake :: A.Arr a -> Int -> A.Arr a
 myTake xs n = A.subArray 0 n xs
