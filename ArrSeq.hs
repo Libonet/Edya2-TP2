@@ -46,7 +46,28 @@ myReduce f e xs = case myShowt xs of
   NODE l r -> let (a,b) = myReduce f e l ||| myReduce f e r
               in f a b
 
+--------------------------------------
 
+contraer :: (a -> a -> a) -> A.Arr a -> A.Arr a
+contraer f xs = case A.length xs of
+  0 -> A.empty
+  n -> let (con, isEven) = A.tabulate (\i -> f (xs ! (2*i)) (xs ! ((2*i)+1))) (div n 2) ||| even n
+       in if isEven then con
+          else myAppend con (A.fromList [xs ! (n-1)])
+
+mezclar :: (a -> a -> a) -> A.Arr a -> A.Arr a -> A.Arr a
+mezclar f xs ys = case A.length xs ||| A.length ys of
+  (lx, 0)  -> A.empty
+  (1, ly)  -> ys
+  (lx, ly) -> let (a,b) = f (xs ! 0) (ys ! 0) ||| mezclar f (myDrop xs 2) (myDrop ys 1)
+              in myAppend (A.fromList [ys ! 0, a]) b
+
+myScan :: (a -> a -> a) -> a -> A.Arr a -> (A.Arr a, a)
+myScan f e xs = case A.length xs of
+  0 -> (A.empty, e)
+  1 -> (A.fromList [e], f e (xs ! 0))
+  n -> let (a,b) = myScan f e (contraer f xs)
+       in (mezclar f xs a, b)
 
 instance Seq A.Arr where
   emptyS     = A.empty
@@ -63,5 +84,8 @@ instance Seq A.Arr where
   showlS     = myShowl
   joinS      = A.flatten
   reduceS    = myReduce
-  scanS      = undefined
+  scanS      = myScan
   fromList   = A.fromList
+
+
+

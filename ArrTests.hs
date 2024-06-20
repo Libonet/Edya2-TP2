@@ -6,11 +6,12 @@ import Arr        (Arr)
 import ArrSeq
 
 
-s0, s1, s2, s3 :: Arr Int
+s0, s1, s2, s3, s4 :: Arr Int
 s0 = fromList []
 s1 = fromList [4]
 s2 = fromList [5,1]
 s3 = fromList [6,3,4]
+s4 = fromList [6,3,4,7]
 
 testLengthEmptySeq :: Test
 testLengthEmptySeq = 
@@ -63,6 +64,12 @@ testScanSumSeq3 =
   TestCase $ assertEqual "Error on scan for sequence of length 3"
                          (fromList[0,6,9], 13) (scanS (+) 0 s3)
 
+
+testScanSumSeq4 :: Test
+testScanSumSeq4 = 
+  TestCase $ assertEqual "Error on scan for sequence of length 4"
+                         (fromList[0,6,9,13], 20) (scanS (+) 0 s4)
+
 testsArray = 
   [
     testMapEmptySeq,
@@ -74,7 +81,8 @@ testsArray =
     testReduceSumSeq0,
     testReduceSumSeq3,
     testScanSumSeq0,
-    testScanSumSeq3
+    testScanSumSeq3,
+    testScanSumSeq4
   ]
 
 
