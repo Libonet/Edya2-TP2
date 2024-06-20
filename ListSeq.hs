@@ -89,9 +89,9 @@ contraer f [x] = [x]
 contraer f (x:y:xs) = let (a,b) = f x y ||| contraer f xs
                       in a:b
 
-mezclar f [] [] = []
-mezclar f [x] b@[x'] = b
-mezclar f (x:y:xs) (x':xs') = let (a,b) = f x' x ||| mezclar f xs xs'
+mezclar f xs [] = []
+mezclar f [x] ys = ys
+mezclar f (x:_:xs) (x':xs') = let (a,b) = f x' x ||| mezclar f xs xs'
                               in x': a : b
 
 
